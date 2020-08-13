@@ -3,7 +3,7 @@ import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 
 import shp from 'shpjs';
 import './App.css';
-import getJson from './gis_osm_railways_free_1.json';
+import getJson from './RoadGraph_2.json';
 
 const data = getJson as GeoJSON.GeoJsonObject;
 
@@ -50,16 +50,14 @@ export default class App extends React.Component<any, IState> {
                 })
             );
 
-
-
-        // shp('files/gis_osm_roads_free_1')
-        //     .then((geojson: any) => {
-        //         this.data = geojson;
-        //         this.setState((prevState) => ({ key2: prevState.key2 + 1, loaded: true }));
-        //     })
-        //     .catch((error: Error) => {
-        //         this.setState({ error });
-        //     });
+        shp('files/RoadGraph')
+            .then((geojson: any) => {
+                this.data = geojson;
+                this.setState((prevState) => ({ key2: prevState.key2 + 1, loaded: true }));
+            })
+            .catch((error: Error) => {
+                this.setState({ error });
+            });
     }
 
     render() {
@@ -84,18 +82,33 @@ export default class App extends React.Component<any, IState> {
                         })}
                     />
 
-                    <GeoJSON
-                        data={data}
-                        style={() => ({
-                            color: '#4a83ec',
-                            weight: 1,
-                            fillColor: '#1a1d62',
-                            fillOpacity: 1,
-                        })}
-                    />
+                    {this.data && (
+                        <GeoJSON
+                            key={key2}
+                            data={this.data}
+                            style={() => ({
+                                color: '#4a83ec',
+                                weight: 3,
+                                fillColor: '#1a1d62',
+                                fillOpacity: 3,
+                            })}
+                        />
+                    )}
                 </Map>
             </div>
         );
     }
 }
 
+// {this.data && (
+//     <GeoJSON
+//         key={key2}
+//         data={this.data}
+//         style={() => ({
+//             color: '#4a83ec',
+//             weight: 1,
+//             fillColor: '#1a1d62',
+//             fillOpacity: 1,
+//         })}
+//     />
+// )}
