@@ -1,26 +1,101 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import shp from 'shpjs';
+import './App.css';
+import getJson from './gis_osm_railways_free_1.json';
+
+const data = getJson as GeoJSON.GeoJsonObject;
+
+interface ILocation {
+    lat: number;
+    lng: number;
 }
 
-export default App;
+interface IState {
+    key1: number;
+    key2: number;
+    loaded: boolean;
+    error?: Error;
+    bikes?: any;
+    zoom: number;
+    location: ILocation;
+}
+
+export default class App extends React.Component<any, IState> {
+    protected data?: GeoJSON.GeoJsonObject | GeoJSON.GeoJsonObject[] = undefined;
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            key1: 0,
+            key2: 100,
+            loaded: false,
+            error: undefined,
+            bikes: undefined,
+            location: {
+                lat: 51.505,
+                lng: -0.09,
+            },
+            zoom: 2,
+        };
+    }
+
+    componentDidMount() {
+        fetch('https://bikewise.org:443/api/v2/locations/markers?proximity_square=10')
+            .then((response) => response.json())
+            .then((data) =>
+                this.setState((prevState) => {
+                    console.log('bikes - ', data);
+                    return { key1: prevState.key1 + 1, bikes: data };
+                })
+            );
+
+
+
+        // shp('files/gis_osm_roads_free_1')
+        //     .then((geojson: any) => {
+        //         this.data = geojson;
+        //         this.setState((prevState) => ({ key2: prevState.key2 + 1, loaded: true }));
+        //     })
+        //     .catch((error: Error) => {
+        //         this.setState({ error });
+        //     });
+    }
+
+    render() {
+        const { key1, key2, loaded } = this.state;
+        const position: [number, number] = [this.state.location.lat, this.state.location.lng];
+
+        return (
+            <div>
+                <Map className="map" center={position} zoom={this.state.zoom}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <GeoJSON
+                        key={this.state.key1}
+                        data={this.state.bikes}
+                        style={() => ({
+                            color: 'red',
+                            weight: 10000000000000000,
+                            fillColor: 'yellow',
+                            fillOpacity: 1,
+                        })}
+                    />
+
+                    <GeoJSON
+                        data={data}
+                        style={() => ({
+                            color: '#4a83ec',
+                            weight: 1,
+                            fillColor: '#1a1d62',
+                            fillOpacity: 1,
+                        })}
+                    />
+                </Map>
+            </div>
+        );
+    }
+}
+
