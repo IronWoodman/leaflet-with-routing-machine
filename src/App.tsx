@@ -13,9 +13,7 @@ interface ILocation {
 }
 
 interface IState {
-    key1: number;
-    key2: number;
-    loaded: boolean;
+    roadLoaded: boolean;
     error?: Error;
     bikes?: any;
     zoom: number;
@@ -23,37 +21,31 @@ interface IState {
 }
 
 export default class App extends React.Component<any, IState> {
-    protected data?: GeoJSON.GeoJsonObject | GeoJSON.GeoJsonObject[] = undefined;
+    protected roadGeoData?: GeoJSON.GeoJsonObject | GeoJSON.GeoJsonObject[] = undefined;
     constructor(props: any) {
         super(props);
         this.state = {
-            key1: 0,
-            key2: 100,
-            loaded: false,
-            error: undefined,
             bikes: undefined,
+            roadLoaded: false,
+            // Novosibirsk location & zoom
             location: {
-                lat: 51.505,
-                lng: -0.09,
+                lat: 55.031,
+                lng: 82.9,
             },
-            zoom: 2,
+            zoom: 14,
+            error: undefined,
         };
     }
 
     componentDidMount() {
         fetch('https://bikewise.org:443/api/v2/locations/markers?proximity_square=10')
             .then((response) => response.json())
-            .then((data) =>
-                this.setState((prevState) => {
-                    console.log('bikes - ', data);
-                    return { key1: prevState.key1 + 1, bikes: data };
-                })
-            );
+            .then((data) => this.setState({ bikes: data }));
 
         shp('files/RoadGraph')
             .then((geojson: any) => {
-                this.data = geojson;
-                this.setState((prevState) => ({ key2: prevState.key2 + 1, loaded: true }));
+                this.roadGeoData = geojson;
+                this.setState({ roadLoaded: true });
             })
             .catch((error: Error) => {
                 this.setState({ error });
@@ -61,7 +53,7 @@ export default class App extends React.Component<any, IState> {
     }
 
     render() {
-        const { key1, key2, loaded } = this.state;
+        const { bikes, roadLoaded } = this.state;
         const position: [number, number] = [this.state.location.lat, this.state.location.lng];
 
         return (
@@ -71,26 +63,23 @@ export default class App extends React.Component<any, IState> {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    <GeoJSON
-                        key={this.state.key1}
-                        data={this.state.bikes}
-                        style={() => ({
-                            color: 'red',
-                            weight: 10000000000000000,
-                            fillColor: 'yellow',
-                            fillOpacity: 1,
-                        })}
-                    />
-
-                    {this.data && (
+                    {bikes && (
                         <GeoJSON
-                            key={key2}
-                            data={this.data}
+                            data={bikes}
                             style={() => ({
-                                color: '#4a83ec',
-                                weight: 3,
-                                fillColor: '#1a1d62',
-                                fillOpacity: 3,
+                                color: 'red',
+                                weight: 1,
+                                fillColor: 'yellow',
+                                fillOpacity: 1,
+                            })}
+                        />
+                    )}
+                    {roadLoaded && this.roadGeoData && (
+                        <GeoJSON
+                            data={this.roadGeoData}
+                            style={() => ({
+                                color: 'blue',
+                                weight: 1,
                             })}
                         />
                     )}
@@ -99,16 +88,3 @@ export default class App extends React.Component<any, IState> {
         );
     }
 }
-
-// {this.data && (
-//     <GeoJSON
-//         key={key2}
-//         data={this.data}
-//         style={() => ({
-//             color: '#4a83ec',
-//             weight: 1,
-//             fillColor: '#1a1d62',
-//             fillOpacity: 1,
-//         })}
-//     />
-// )}
