@@ -3,7 +3,7 @@ import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 
 import shp from 'shpjs';
 import './App.css';
-import getJson from './RoadGraph_2.json';
+import getJson from './gis_osm_railways_free_1.json';
 
 const data = getJson as GeoJSON.GeoJsonObject;
 
