@@ -3,9 +3,12 @@ import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 
 import shp from 'shpjs';
 import './App.css';
-import getJson from './gis_osm_railways_free_1.json';
+import RoutingMachine from './RoutingMachine';
+// import getJson from './gis_osm_railways_free_1.json';
+// import getJson from './roadGraph.json';
+// import { geoJSON } from 'leaflet';
 
-const data = getJson as GeoJSON.GeoJsonObject;
+// const data = getJson as GeoJSON.GeoJsonObject;
 
 interface ILocation {
     lat: number;
@@ -22,6 +25,7 @@ interface IState {
 
 export default class App extends React.Component<any, IState> {
     protected roadGeoData?: GeoJSON.GeoJsonObject | GeoJSON.GeoJsonObject[] = undefined;
+    protected map = React.createRef<any>();
     constructor(props: any) {
         super(props);
         this.state = {
@@ -58,12 +62,13 @@ export default class App extends React.Component<any, IState> {
 
         return (
             <div>
-                <Map className="map" center={position} zoom={this.state.zoom}>
+                <Map className="map" center={position} zoom={this.state.zoom} ref={this.map}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    {bikes && (
+                    <RoutingMachine map={this.map} />
+                    {/* {bikes && (
                         <GeoJSON
                             data={bikes}
                             style={() => ({
@@ -82,7 +87,7 @@ export default class App extends React.Component<any, IState> {
                                 weight: 1,
                             })}
                         />
-                    )}
+                    )} */}
                 </Map>
             </div>
         );
