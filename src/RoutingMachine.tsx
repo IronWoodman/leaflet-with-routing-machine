@@ -7,14 +7,11 @@ class RoutingMachine extends MapLayer<any> {
   createLeafletElement() {
     const { map } = (this.props as any).leaflet;
     
-    console.log('=props', this.props);
-
     const waypoints = [
         L.latLng(54.496566, 21.1810993),
         L.latLng(54.514357, 21.248480)
     ];
 
-    console.log('=map', map);
     let leafletElement = L.Routing.control({
       waypoints,
       router: L.Routing.osrmv1({
