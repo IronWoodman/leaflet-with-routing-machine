@@ -1,9 +1,11 @@
 import React from 'react';
-import { Map, TileLayer, GeoJSON } from 'react-leaflet';
+import { Map, TileLayer } from 'react-leaflet';
 
 import shp from 'shpjs';
 import './App.css';
 import RoutingMachine from './RoutingMachine';
+
+const OSRM = require('osrm');
 // import getJson from './gis_osm_railways_free_1.json';
 // import getJson from './roadGraph.json';
 // import { geoJSON } from 'leaflet';
@@ -60,6 +62,8 @@ export default class App extends React.Component<any, IState> {
         const { bikes, roadLoaded } = this.state;
         const position: [number, number] = [this.state.location.lat, this.state.location.lng];
 
+        const osrm = new OSRM('kor.osrm');
+        
         return (
             <div>
                 <Map className="map" center={position} zoom={this.state.zoom} ref={this.map}>

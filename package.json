@@ -12,20 +12,22 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-leaflet": "2.5.2",
     "@types/shpjs": "3.4.0",
+    "D": "^1.0.0",
     "geojson-world-map": "^0.0.2",
     "leaflet": "1.6.0",
     "leaflet-routing-machine": "^3.2.12",
+    "osrm": "^5.22.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-leaflet": "2.7.0",
-    "react-scripts": "3.4.1",
-    "shpjs": "3.5.0",
-    "typescript": "3.7.2"
+    "react-scripts": "^3.4.3",
+    "react-scripts-ts": "^3.1.0",
+    "shpjs": "3.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start --scripts-version react-scripts-ts",
+    "build": "react-app-rewired build --scripts-version react-scripts-ts",
+    "test": "react-app-rewired test --env=jsdom --scripts-version react-scripts-ts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -44,6 +46,10 @@
     ]
   },
   "devDependencies": {
-    "@types/leaflet-routing-machine": "^3.2.2"
+    "@types/leaflet-routing-machine": "^3.2.2",
+    "copy-webpack-plugin": "^6.1.0",
+    "raw-loader": "^4.0.1",
+    "react-app-rewired": "1.6.2",
+    "typescript": "^3.7.2"
   }
 }

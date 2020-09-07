@@ -1,0 +1,12 @@
+{
+    "linterOptions": {
+        "exclude":[
+            "./node_modules/**/**",
+            "./dist/**/**",
+            "./mappers/**/**",
+            "./shared/dbWrappers/**/**"
+        ]
+    },
+    "rules": {
+    }
+}
